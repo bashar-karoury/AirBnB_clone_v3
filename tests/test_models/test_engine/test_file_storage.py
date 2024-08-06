@@ -113,3 +113,57 @@ class TestFileStorage(unittest.TestCase):
         with open("file.json", "r") as f:
             js = f.read()
         self.assertEqual(json.loads(string), json.loads(js))
+
+    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
+    def test_count_by_class(self):
+        """Test that count properly counts objects by class"""
+        storage = FileStorage()
+        new_dict = {}
+        for key, value in classes.items():
+            instance = value()
+            instance_key = instance.__class__.__name__ + "." + instance.id
+            new_dict[instance_key] = instance
+        save = FileStorage._FileStorage__objects
+        FileStorage._FileStorage__objects = new_dict
+        for clss in classes:
+            self.assertEqual(1, storage.count(clss))
+        FileStorage._FileStorage__objects = save
+
+    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
+    def test_count_all(self):
+        """Test that count properly counts all objects"""
+        storage = FileStorage()
+        new_dict = {}
+        for key, value in classes.items():
+            instance = value()
+            instance_key = instance.__class__.__name__ + "." + instance.id
+            new_dict[instance_key] = instance
+        save = FileStorage._FileStorage__objects
+        FileStorage._FileStorage__objects = new_dict
+        self.assertEqual(len(classes), storage.count())
+        FileStorage._FileStorage__objects = save
+
+    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
+    def test_get(self):
+        """Test that get properly gets right object"""
+        storage = FileStorage()
+        new_dict = {}
+        for key, value in classes.items():
+            instance = value()
+            instance_key = instance.__class__.__name__ + "." + instance.id
+            new_dict[instance_key] = instance
+        save = FileStorage._FileStorage__objects
+
+        for ob_key in new_dict:
+            class_arg = new_dict.get(ob_key).__class__
+            id_arg = new_dict.get(ob_key).id
+            self.assertEqual(storage.get(class_arg, id_arg), None)
+        FileStorage._FileStorage__objects = new_dict
+
+        # verify each object is exist and right
+        for ob_key in new_dict:
+            class_arg = new_dict.get(ob_key).__class__
+            id_arg = new_dict.get(ob_key).id
+            value_to_check = new_dict.get(ob_key)
+            self.assertEqual(storage.get(class_arg, id_arg), value_to_check)
+        FileStorage._FileStorage__objects = save
