@@ -14,6 +14,7 @@ def teardown_db(exception):
     """closes the storage on teardown"""
     storage.close()
 
+
 @app.errorhandler(404)
 def not_found(error):
     """ returns a JSON-formatted 404 status code response"""
