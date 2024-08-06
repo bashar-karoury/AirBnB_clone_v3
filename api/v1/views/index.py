@@ -16,19 +16,16 @@ def status():
     """
     return jsonify({"status": "OK"})
 
+
 @app_views.route('/stats')
 def stats():
     """ returns retrieves the number of each objects by type
     """
-    classes = {"amenities": Amenity, "cities": City,
-           "places": Place, "reviews": Review, "states": State, "users": User}
+    classes = {
+        "amenities": Amenity, "cities": City,
+        "places": Place, "reviews": Review, "states": State, "users": User}
     count_dict = {}
     for clss_name, clss in classes.items():
         count_dict[clss_name] = storage.count(clss)
 
     return jsonify(count_dict)
-
-
-
-
-
