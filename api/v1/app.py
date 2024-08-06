@@ -21,7 +21,16 @@ def not_found(error):
     return make_response(jsonify({"error": "Not found"}), 404)
 
 
+@app.errorhandler(400)
+def custom_400_error(error):
+    """ responde with 400 error code with custorm message
+    """
+    response = jsonify({"error": error.description})
+    response.status_code = 400
+    return response
+
+
 if __name__ == '__main__':
     HOST = os.getenv('HBNB_API_HOST', '0.0.0.0')
     PORT = os.getenv('HBNB_API_PORT', '5000')
-    app.run(host=HOST, port=PORT, threaded=True)
+    app.run(host=HOST, port=PORT, threaded=True, debug=True)
