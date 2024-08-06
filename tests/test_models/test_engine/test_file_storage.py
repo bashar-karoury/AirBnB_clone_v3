@@ -142,7 +142,7 @@ class TestFileStorage(unittest.TestCase):
         FileStorage._FileStorage__objects = new_dict
         self.assertEqual(len(classes), storage.count())
         FileStorage._FileStorage__objects = save
-    
+
     @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
     def test_get(self):
         """Test that get properly gets right object"""
@@ -154,12 +154,16 @@ class TestFileStorage(unittest.TestCase):
             new_dict[instance_key] = instance
         save = FileStorage._FileStorage__objects
 
-        # verify each object doesn't exist yest
         for ob_key in new_dict:
-            self.assertEqual(storage.get(new_dict.get(ob_key).id), None)
+            class_arg = new_dict.get(ob_key).__class__
+            id_arg = new_dict.get(ob_key).id
+            self.assertEqual(storage.get(class_arg, id_arg), None)
         FileStorage._FileStorage__objects = new_dict
 
         # verify each object is exist and right
         for ob_key in new_dict:
-            self.assertEqual(storage.get(new_dict.get(ob_key).__class__, new_dict.get(ob_key).id), new_dict.get(ob_key))
+            class_arg = new_dict.get(ob_key).__class__
+            id_arg = new_dict.get(ob_key).id
+            value_to_check = new_dict.get(ob_key)
+            self.assertEqual(storage.get(class_arg, id_arg), value_to_check)
         FileStorage._FileStorage__objects = save
