@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-'''contains the main app to run'''
+"""contains the main app to run"""
 from flask import Flask
 from models import storage
 from api.v1.views import app_views
@@ -18,4 +18,4 @@ def teardown_db(exception):
 if __name__ == '__main__':
     HOST = os.getenv('HBNB_API_HOST', '0.0.0.0')
     PORT = os.getenv('HBNB_API_PORT', '5000')
-    app.run(host=HOST, port=PORT)
+    app.run(host=HOST, port=PORT, threaded=True)
